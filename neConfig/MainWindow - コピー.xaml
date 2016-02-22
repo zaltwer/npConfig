@@ -1,0 +1,136 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:neConfig" x:Name="ConfigMain" x:Class="neConfig.MainWindow"
+        Title="neConfig" Height="500" Width="800" HorizontalAlignment="Left" VerticalAlignment="Top">
+    <Window.Resources>
+        <local:AssignConverter2 x:Key="AssignConverter2"/>
+    </Window.Resources>
+    <Grid x:Name="G1" Margin="10">
+        <Button x:Name="save" Content="保存" HorizontalAlignment="Right" Height="25" Margin="0,0,10.334,-0.333" VerticalAlignment="Bottom" Width="159" Click="save_Click" Grid.Column="1"/>
+        <TabControl Margin="0,0,0.333,29.667" >
+            <TabItem Header="ショートカット設定">
+                <Grid x:Name="TabGrid1">
+                    <Grid.DataContext>
+                        <local:KLtest x:Name="KeyList"/>
+                    </Grid.DataContext>
+                    <Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Right" Height="45" Margin="0,41,9.667,0" VerticalAlignment="Top" Width="280" CornerRadius="10"/>
+                    <Label Content="割り当て中のキー" HorizontalAlignment="Right" Height="28" Margin="0,192,132.667,0" VerticalAlignment="Top" Width="159" IsHitTestVisible="False" Foreground="Black" VerticalContentAlignment="Bottom"/>
+                    <Button x:Name="AddButton" Content="割り当て" HorizontalAlignment="Right" Margin="0,144,9.333,0" VerticalAlignment="Top" Width="279" Height="29" Click="AddButton_Click" IsEnabled="False"/>
+                    <TextBox x:Name="InpBox" HorizontalAlignment="Right" Height="22" Margin="0,117,9.667,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="280" PreviewKeyDown="InpBox_PreviewKeyDown"
+                		InputMethod.PreferredImeState="Off" IsReadOnly="True" IsReadOnlyCaretVisible="True" IsUndoEnabled="True" MaxLines="1" TextAlignment="Center" AllowDrop="False" IsEnabled="False" />
+                    <ListBox x:Name="EditListBox" HorizontalAlignment="Right" Margin="0,220,9.333,44.333"
+                		Width="280" RenderTransformOrigin="0,0"
+                		ScrollViewer.CanContentScroll="True"
+                		ItemsSource="{Binding /assign, Converter={StaticResource AssignConverter2}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectionChanged="EditListBox_SelectionChanged"/>
+                    <Label Content="キー入力" HorizontalAlignment="Right" Height="28" Margin="0,92,234.667,0" VerticalAlignment="Top" Width="56" IsHitTestVisible="False" Foreground="Black" VerticalContentAlignment="Bottom"/>
+                    <Label x:Name="warnMSG" Content="" HorizontalAlignment="Right" Height="24" Margin="0,96,10.667,0" VerticalAlignment="Top" Width="219" Foreground="Red" Background="{x:Null}"/>
+                    <DataGrid x:Name="KeyListGrid"
+                		IsReadOnly="True" SelectionMode="Single"
+                		SelectedCellsChanged="KeyGrid_SelectedCellsChanged"
+                		AutoGeneratingColumn="KeyGrid_AutoGeneratingColumn"
+                		IsSynchronizedWithCurrentItem="True" Margin="10,40,296.667,10.333"
+                		ItemsSource="{Binding Mode=OneWay}"/>
+                    <Label Content="ショートカット一覧" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="113"/>
+                    <Label Content="絞込み" HorizontalAlignment="Right" Margin="0,24,219.333,0" VerticalAlignment="Top" Width="48" Height="24" RenderTransformOrigin="0.562,1.285" Background="White"/>
+                    <Button x:Name="DelButton" Content="削除" HorizontalAlignment="Right" Margin="0,0,8.333,10.333" VerticalAlignment="Bottom" Width="280" Height="29" Click="DelButton_Click" IsEnabled="False"/>
+                    <Label Content="カテゴリ" HorizontalAlignment="Right" VerticalAlignment="Top" Width="51" Height="24" VerticalContentAlignment="Center" Margin="0,53,238.667,0"/>
+                    <ComboBox x:Name="Filter01" HorizontalAlignment="Right" Height="24" VerticalAlignment="Top" Width="75" SelectionChanged="Filter01_SelectionChanged" RenderTransformOrigin="-0.131,0.556" VerticalContentAlignment="Center" SelectedIndex="0" Margin="0,53,169.667,0">
+                        <ComboBoxItem Content="全て"/>
+                        <ComboBoxItem Content="ファイル"/>
+                        <ComboBoxItem Content="編集"/>
+                        <ComboBoxItem Content="イメージ"/>
+                        <ComboBoxItem Content="レイヤー"/>
+                        <ComboBoxItem Content="選択範囲"/>
+                        <ComboBoxItem Content="ビュー"/>
+                        <ComboBoxItem Content="ウィンドウ"/>
+                        <ComboBoxItem Content="スクリプト"/>
+                        <ComboBoxItem Content="ブラシ"/>
+                        <ComboBoxItem Content="ヘルプ"/>
+                        <ComboBoxItem Content="α"/>
+                        <ComboBoxItem Content="ツール"/>
+                        <ComboBoxItem Content="その他"/>
+                    </ComboBox>
+                    <Label Content="割り当て" HorizontalAlignment="Right" VerticalAlignment="Top" Width="53" Height="24" VerticalContentAlignment="Center" Margin="0,53,110.667,0"/>
+                    <ComboBox x:Name="Filter02" HorizontalAlignment="Right" Height="24" VerticalAlignment="Top" Width="93" SelectedIndex="0" SelectionChanged="Filter02_SelectionChanged" VerticalContentAlignment="Center" Margin="0,53,16.667,0">
+                        <ComboBoxItem Content="全て"/>
+                        <ComboBoxItem Content="未割り当て"/>
+                        <ComboBoxItem Content="割り当て済み"/>
+                    </ComboBox>
+                </Grid>
+            </TabItem>
+            <TabItem Header="スクリプト設定">
+                <Grid x:Name="TabGrid2">
+                    <Grid.Resources>
+                        <HierarchicalDataTemplate
+                            x:Key="DT"
+                            DataType="local:ScriptList"
+                            ItemsSource="{Binding Path=Children}">
+                            <TextBlock Text="{Binding Name}" />
+                        </HierarchicalDataTemplate>
+                    </Grid.Resources>
+                    <Grid.DataContext>
+                        <local:ScriptList x:Name="SL"/>
+                    </Grid.DataContext>
+                    <TreeView
+                        x:Name="TV01" HorizontalAlignment="Left" Width="250"
+                        Margin="10,40,0,10.333" IsManipulationEnabled="True"
+                        ItemTemplate="{StaticResource DT}"
+                        ItemsSource="{Binding Mode=OneWay}"
+                        MouseMove="TV01_MouseMove" Drop="TV01_Drop"
+                        TreeViewItem.Selected="TreeViewItemSelected"
+                        AllowDrop="True"/>
+                    <TextBox
+                        x:Name="SrcBox" Margin="265,238,222.333,7.333"
+                        Text="{Binding ItemsSource/SRC, ElementName=FileNameCmb}" VerticalScrollBarVisibility="Auto" IsReadOnly="True" HorizontalScrollBarVisibility="Auto" Width="280"/>
+                    <Label Content="登録スクリプト一覧" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="188"/>
+                    <Label Content="スクリプトファイル名" HorizontalAlignment="Left" Margin="265,103,0,0" VerticalAlignment="Top" Width="115"/>
+                    <Label Content="スクリプト名" HorizontalAlignment="Left" Margin="265,151,0,0" VerticalAlignment="Top" Width="76"/>
+                    <Label Content="登録名" HorizontalAlignment="Left" Margin="265,56,0,0" VerticalAlignment="Top" Width="57"/>
+                    <TextBox
+                        x:Name="NameBox" Height="22" Margin="265,82,222.333,0" TextWrapping="Wrap"
+                        Text="{Binding SelectedValue.Name, ElementName=TV01, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        VerticalAlignment="Top" Width="280"/>
+                    <Grid>
+                        <Grid.DataContext>
+                            <local:ScriptInfoList x:Name="SIL"/>
+                        </Grid.DataContext>
+                        <ComboBox
+                            x:Name="FileNameCmb" Height="22"
+                            Margin="267,124,220.333,0" VerticalAlignment="Top"
+                            ItemsSource="{Binding Mode=OneWay}" IsSynchronizedWithCurrentItem="True" SelectionChanged="FileNameCmb_SelectionChanged" Width="280">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Path=FileName}" />
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                        <ComboBox
+                            x:Name="ScriptNameCmb" Height="22"
+                            Margin="267,175,220.333,0" VerticalAlignment="Top"
+                            ItemsSource="{Binding ItemsSource/ScriptName, ElementName=FileNameCmb}" SelectionChanged="ScriptNameCmb_SelectionChanged" Width="280"/>
+                        <Button
+                            x:Name="AddScript" Content="新規追加"
+                            RenderTransformOrigin="-2.444,-1.91" Margin="267,24,0,0"
+                            VerticalAlignment="Top" HorizontalAlignment="Left" Height="29"
+                            Width="80" Click="AddScript_Click"/>
+                        <Button
+                        	x:Name="DelScript" Content="削除"
+                        	RenderTransformOrigin="-2.444,-1.91" Margin="352,24,0,0"
+                        	VerticalAlignment="Top" HorizontalAlignment="Left" Height="29"
+                        	Width="80" Click="DelScript_Click"/>
+                    </Grid>
+                    <TextBox
+                        x:Name="FileNameBox" Height="22" Margin="265,124,242.333,0" TextWrapping="Wrap"
+                        Text="{Binding SelectedValue.FileName, ElementName=TV01, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        VerticalAlignment="Top" IsReadOnly="True" Width="260"/>
+                    <TextBox
+                    	x:Name="FuncNameBox" Height="22" Margin="265,175,242.333,0" TextWrapping="Wrap"
+                    	Text="{Binding SelectedValue.FuncName, ElementName=TV01, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                    	VerticalAlignment="Top" IsReadOnly="True" Width="260"/>
+                </Grid>
+            </TabItem>
+        </TabControl>
+
+    </Grid>
+</Window>
