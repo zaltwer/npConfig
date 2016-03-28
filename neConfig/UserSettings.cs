@@ -31,7 +31,7 @@ namespace neConfig
         public static void SaveSetting()
         {
             string appPath = System.Windows.Forms.Application.StartupPath;
-            appPath = @"neConfig.config";
+            appPath = @"UserSetting.config";
 
             DataContractSerializer ds = new DataContractSerializer(typeof(UserSettings));
             XmlWriter xw = XmlWriter.Create(appPath);
@@ -42,7 +42,7 @@ namespace neConfig
         public static void LoadSetting()
         {
             string appPath = System.Windows.Forms.Application.StartupPath;
-            appPath = @"neConfig.config";
+            appPath = @"UserSetting.config";
             if (System.IO.File.Exists(appPath))
             {
                 //ファイルが存在する場合

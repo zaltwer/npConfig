@@ -30,7 +30,7 @@
   &lt;string&gt;NumPad8 num8&lt;/string&gt;
   &lt;string&gt;NumPad9 num9&lt;/string&gt;
   &lt;string&gt;Multiply num*&lt;/string&gt;
-  &lt;string&gt;Add num+&lt;/string&gt;
+  &lt;string&gt;Add numplus&lt;/string&gt;
   &lt;string&gt;Subtract num-&lt;/string&gt;
   &lt;string&gt;Divide num/&lt;/string&gt;
   &lt;string&gt;Decimal num.&lt;/string&gt;
@@ -88,7 +88,7 @@
   &lt;string&gt;805 貼り付け 透明度付き&lt;/string&gt;
   &lt;string&gt;806 コピー 透明度付き&lt;/string&gt;
   &lt;string&gt;1025 キャンバスサイズ&lt;/string&gt;
-  &lt;string&gt;1026 色調補正 トーンカーブ HSV&lt;/string&gt;
+  &lt;string&gt;1026 色調補正 トーンカーブ&lt;/string&gt;
   &lt;string&gt;1027 色調補正 トーンカーブ HSV&lt;/string&gt;
   &lt;string&gt;1028 選択範囲でキャンバスをトリミング&lt;/string&gt;
   &lt;string&gt;1281 新規レイヤー&lt;/string&gt;
@@ -336,7 +336,7 @@
   &lt;string&gt;編集 805 貼り付け 透明度付き&lt;/string&gt;
   &lt;string&gt;編集 806 コピー 透明度付き&lt;/string&gt;
   &lt;string&gt;イメージ 1025 キャンバスサイズ&lt;/string&gt;
-  &lt;string&gt;イメージ 1026 色調補正 トーンカーブ HSV&lt;/string&gt;
+  &lt;string&gt;イメージ 1026 色調補正 トーンカーブ&lt;/string&gt;
   &lt;string&gt;イメージ 1027 色調補正 トーンカーブ HSV&lt;/string&gt;
   &lt;string&gt;イメージ 1028 選択範囲でキャンバスをトリミング&lt;/string&gt;
   &lt;string&gt;レイヤー 1281 新規レイヤー&lt;/string&gt;

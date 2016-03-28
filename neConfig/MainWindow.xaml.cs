@@ -107,9 +107,6 @@ namespace neConfig
             necIO.ReadNekoKeytxt(NpDir,ScriptID, AllAssign, AllName, KeyList);
             IDRangeT = KeyList.Count();
 
-            //ネコぺkey.txtに入ってなくてアサインされてる機能への対応予定地
-            //ピクセル単位の移動と全タブ表示切替
-
             Pop01.PlacementTarget = Label1;
             #endregion
             #region スクリプト設定タブ

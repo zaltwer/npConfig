@@ -50,6 +50,8 @@ namespace neConfig
                 Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
                 dlg.FileName = "";
                 dlg.Filter = "npaint_script.exe|npaint_script.exe";
+//                dlg.Filter = "exe|*.exe";
+//                dlg.DefaultExt = "*.exe";
                 dlg.Title = "ネコペイント本体の場所を指定して下さい";
 
                 Nullable<bool> result = dlg.ShowDialog();
@@ -242,6 +244,15 @@ namespace neConfig
                 {
                     foreach (var tmp in KL)
                     {
+                        //ネコぺkey.txtに入ってなくてデフォルトでアサインされてる機能への対応
+                        if ((tmp.ID >= 790 && tmp.ID <= 793) || tmp.ID == 3334)
+                        {
+                            //ピクセル単位の移動と全タブ表示切替に割当がない場合、key.txtには書き込まない
+                            if (tmp.assign == "")
+                            {
+                                continue;
+                            }
+                        }
                         string str = Convert.ToString(tmp.ID) + " " + tmp.name + tmp.assign;
                         w.WriteLine(str);
                     }
