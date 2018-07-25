@@ -83,9 +83,9 @@ namespace neConfig
             UserSettings.LoadSetting();
             //起動ディレクトリ設定
             NpDir = necIO.GetNpDir();
-            if (NpDir == "")
+            if (NpDir == null || NpDir == "")
             {
-                MessageBox.Show("ネコペイント本体が見つかりません。neConfigを終了します", "エラー");
+                MessageBox.Show("key.txtが見つかりません。neConfigを終了します", "エラー");
                 Close();
                 return;
             }
@@ -108,7 +108,7 @@ namespace neConfig
             IDRangeT = KeyList.Count();
 
             Pop01.PlacementTarget = Label1;
-            #endregion
+            #endregion                  
             #region スクリプト設定タブ
             //ツリービューにルートディレクトリ作成
             SL.Add(new ScriptData("スクリプト"));
@@ -132,7 +132,6 @@ namespace neConfig
                     System.Text.Encoding.GetEncoding("Shift_JIS"));
                 SIL.Add(SI);
             }
-
             //ツリービューを一段階展開
             if (TV01.ItemContainerGenerator.Status != GeneratorStatus.ContainersGenerated)
             {
@@ -602,6 +601,16 @@ namespace neConfig
             }
             else
             {
+                //同一機能の4件目以降のショートカットは無視されるため確認メッセージを出力
+                if (EditListBox.Items.Count >= 3)
+                {
+                    string sMsg = "同一機能へのキー割り当ては３件までしか認識されませんが割り当てを行いますか？";
+                    if (MessageBox.Show(sMsg, "確認", MessageBoxButton.OKCancel) == MessageBoxResult.Cancel)
+                    {
+                        InpBox.Focus();
+                        return;
+                    }
+                }
                 if (AllAssign.ContainsKey(InpBox.Text))
                 {
                     string sMsg = "";
@@ -976,8 +985,13 @@ namespace neConfig
 
             //ドロップ先オブジェクト（TreeVewItem内部のコントロールしか取れない）
             DependencyObject destControl = e.OriginalSource as DependencyObject;
-            if (destControl != null)
+            if (destControl != null && destControl.DependencyObjectType.Name == "TextBlock")
             {
+                //ドロップ先の強調を解除
+                TextBlock txWk = (TextBlock)destControl;
+                txWk.TextDecorations = TextDecorationCollectionConverter.ConvertFromString("none");
+                txWk.FontWeight = FontWeights.Normal;
+
                 //ドロップ先オブジェクトのパスリストを取得
                 var DestPath = GetGCetontainerFromElementList(srcTV, destControl);
                 //ドロップ先オブジェクトのパスにドラッグ元がいないかチェック
@@ -1000,11 +1014,24 @@ namespace neConfig
                     {
                         //ドラッグ元ノードの親の具を取得
                         ScriptData srcParentData = SrcParent.Header as ScriptData;
-                        if (destData == SL[0]) //ドロップ先がルート以外なら中に入れないようにしてみる
+//                        if (destData == SL[0]) //ドロップ先がルート以外なら中に入れないようにしてみる
+//                        if (destData.Children != null) //フォルダなら中に入れるよう修正
+                        if (destData.Children != null && destTVItem.IsExpanded == true) //フォルダかつ展開中なら中に入れるよう修正
                         {
+                            //座標取得テスト（未使用）
+                            Point pt = txWk.PointToScreen(new Point(0.0d, 0.0d));
+                            Point ptM = txWk.PointToScreen(new Point(0.0d, 0.0d));
+                            Point ptD = e.GetPosition(txWk);
                             //ドロップ先がディレクトリなら先頭に追加
-                            destData.Children.Insert(0,srcData);
-                            srcParentData.Children.Remove(srcData);
+                            if (SrcParent == destTVItem)
+                            {
+                                //同じフォルダなら移動
+                                destData.Children.Move(srcParentData.Children.IndexOf(srcData), 0);
+                            }else{
+                                //別フォルダの場合追加＋削除
+                                destData.Children.Insert(0, srcData);
+                                srcParentData.Children.Remove(srcData);
+                            }
                         }
                         else
                         {
@@ -1012,7 +1039,9 @@ namespace neConfig
                             TreeViewItem destParent = GetGCetontainerFromElementList(srcTV, destTVItem).LastOrDefault() as TreeViewItem;
                             ScriptData destParentData = destParent.Header as ScriptData;
                             srcParentData.Children.Remove(srcData);
-                            destParentData.Children.Insert(destParentData.Children.IndexOf(destData), srcData);
+//                            destParentData.Children.Insert(destParentData.Children.IndexOf(destData), srcData);
+                            //前挿入から後ろに追加に変更
+                            destParentData.Children.Insert(destParentData.Children.IndexOf(destData)+1, srcData);
                         }
                     }
                 }
@@ -1428,6 +1457,23 @@ namespace neConfig
                 //ディレクトリ以外なら強制的に半角スペースを追加
                 NameBox.Text += " ";
             }
+        }
+
+        private void TextBlock_DragEnter(object sender, DragEventArgs e)
+        {
+            //カーソル下のテキストを強調表示
+            TextBlock txWk = (TextBlock)sender;
+
+            txWk.TextDecorations = TextDecorations.Underline;
+//            txWk.FontWeight = FontWeights.Bold; //太字は見づらいので却下
+        }
+
+        private void TextBlock_DragLeave(object sender, DragEventArgs e)
+        {
+            //強調表示解除
+            TextBlock txWk = (TextBlock)sender;
+            txWk.TextDecorations = TextDecorationCollectionConverter.ConvertFromString("none");
+            txWk.FontWeight = FontWeights.Normal;
         }
     }
 }

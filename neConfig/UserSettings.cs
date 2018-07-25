@@ -34,7 +34,11 @@ namespace neConfig
             appPath = @"UserSetting.config";
 
             DataContractSerializer ds = new DataContractSerializer(typeof(UserSettings));
-            XmlWriter xw = XmlWriter.Create(appPath);
+            //Xmlの改行・インデント設定
+            XmlWriterSettings settings = new XmlWriterSettings();
+            settings.Indent = true;
+            settings.IndentChars = "\t";
+            XmlWriter xw = XmlWriter.Create(appPath, settings);
             //シリアル化して書き込む
             ds.WriteObject(xw, Instance);
             xw.Close();

@@ -19,7 +19,6 @@ namespace neConfig
         public string GetNpDir()
         {
             bool ChkFlg = true;
-//            string  Dir = Properties.Settings.Default.npDir;
             string Dir = UserSettings.Instance.NpDir;
             if (Dir == "" || Dir == null)
             {
@@ -29,40 +28,47 @@ namespace neConfig
             }
             else
             {
-                DirectoryInfo dirChk = new DirectoryInfo(Dir);
+                DirectoryInfo dirChk = new DirectoryInfo(Dir + "\\config");
                 if (dirChk.Exists == true)
                 {
-                    var aaa = dirChk.GetFiles("npaint_script.exe");
+//                    var aaa = dirChk.GetFiles("npaint_script.exe");
+                    var aaa = dirChk.GetFiles("key.txt");
                     if (aaa.Length == 0)
                     {
-                        MessageBox.Show("ネコペイント本体が見つかりません。\nネコペイント本体の場所を指定して下さい", "警告");
+//                        MessageBox.Show("ネコペイント本体が見つかりません。\nネコペイント本体の場所を指定して下さい", "警告");
+                        MessageBox.Show("ネコペイント設定ファイルが見つかりません。\nネコペイント本体の場所を指定して下さい", "警告");
                         ChkFlg = false;
                     }
                 }
                 else
                 {
-                    MessageBox.Show("ネコペイント本体が見つかりません。\nネコペイント本体の場所を指定して下さい", "警告");
+                    MessageBox.Show("ネコペイント設定ファイルが見つかりません。\nネコペイント本体の場所を指定して下さい", "警告");
                     ChkFlg = false;
                 }
             }
             if (ChkFlg == false)
             {
-                Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
-                dlg.FileName = "";
-                dlg.Filter = "npaint_script.exe|npaint_script.exe";
-//                dlg.Filter = "exe|*.exe";
-//                dlg.DefaultExt = "*.exe";
-                dlg.Title = "ネコペイント本体の場所を指定して下さい";
+//                Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
+//                dlg.FileName = "";
+//                dlg.Filter = "npaint_script.exe|npaint_script.exe";
+//                dlg.Title = "ネコペイント本体の場所を指定して下さい";
 
-                Nullable<bool> result = dlg.ShowDialog();
-                if (result == true)
+                System.Windows.Forms.FolderBrowserDialog fbd = new System.Windows.Forms.FolderBrowserDialog();
+                fbd.Description = "ネコペイント本体の場所を指定して下さい";
+                fbd.ShowNewFolderButton = false;
+
+                //ダイアログを表示する
+                Nullable<System.Windows.Forms.DialogResult> result = fbd.ShowDialog();
+                if (result == System.Windows.Forms.DialogResult.OK)
                 {
-                    // Open document
-                    Dir = Path.GetDirectoryName(dlg.FileName);
-//                    Properties.Settings.Default.npDir = Dir;
-//                    Properties.Settings.Default.Save();
-                    UserSettings.Instance.NpDir = Dir;
-                    UserSettings.SaveSetting();
+                    //key.txtの存在確認
+                    if (System.IO.File.Exists(fbd.SelectedPath + "\\config\\key.txt"))
+                    {
+                        //key.txtが取得できた場合、指定されたディレクトリを保存
+                        Dir = fbd.SelectedPath;
+                        UserSettings.Instance.NpDir = Dir;
+                        UserSettings.SaveSetting();
+                    }
                 }
                 else
                 {

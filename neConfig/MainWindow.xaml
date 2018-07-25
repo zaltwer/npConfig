@@ -16,7 +16,7 @@
                 ItemsSource="{Binding Path=Children}">
                 <StackPanel Orientation="Horizontal">
                     <Image x:Name="HeadImage" Source="{Binding HeadImage}" Width="12" HorizontalAlignment="Left" />
-                    <TextBlock Text="{Binding Name, Converter={StaticResource SepConv}}" HorizontalAlignment="Stretch" MouseMove="TextBlock_MouseMove" Padding="0,0,50,0" Margin="5,0,0,0" />
+                    <TextBlock Text="{Binding Name, Converter={StaticResource SepConv}}" HorizontalAlignment="Stretch" MouseMove="TextBlock_MouseMove" Padding="0,0,50,0" Margin="5,0,0,0" Opacity="1" Cursor="" Height="Auto" DragEnter="TextBlock_DragEnter" DragLeave="TextBlock_DragLeave" />
                 </StackPanel>
             </HierarchicalDataTemplate>
         </Grid.Resources>
@@ -61,7 +61,7 @@
                     	InputMethod.PreferredImeState="Off" IsReadOnly="True" IsReadOnlyCaretVisible="True" IsUndoEnabled="True" MaxLines="1" TextAlignment="Center" AllowDrop="False" IsEnabled="False" Visibility="Hidden" />
                 </Grid>
             </TabItem>
-            <TabItem x:Name="TAB2" Header="スクリプト設定">
+            <TabItem x:Name="TAB2" Header="スクリプト設定" Visibility="Visible">
                 <Grid x:Name="TabGrid2">
                     <Grid.DataContext>
                         <local:ScriptList x:Name="SL"/>
@@ -72,7 +72,15 @@
                         ItemTemplate="{StaticResource DT}"
                         ItemsSource="{Binding Mode=OneWay}" Drop="TV01_Drop"
                         TreeViewItem.Selected="TreeViewItemSelected"
-                        AllowDrop="True"/>
+                        AllowDrop="True">
+                        <!--
+                        <TreeView.Resources>
+                            <Style TargetType="TreeViewItem">
+                                <Setter Property="IsExpanded" Value="True"/>
+                            </Style>
+                        </TreeView.Resources>
+                        -->
+                    </TreeView>
                     <TextBox
                         x:Name="SrcBox" Margin="267,230,10,10.333"
                         Text="{Binding ItemsSource/SRC, ElementName=FileNameCmb}" VerticalScrollBarVisibility="Auto" IsReadOnly="True" HorizontalScrollBarVisibility="Auto"/>
